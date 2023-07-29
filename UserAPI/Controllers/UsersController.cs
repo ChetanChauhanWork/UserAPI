@@ -91,7 +91,7 @@ namespace UserAPI.Controllers
         [HttpDelete]
         public async Task<IActionResult> DeleteAll()
         {
-            var users =  await _userAPIDbContext.Users.ToListAsync();
+            var users =  _userAPIDbContext.Users.ToListAsync();
 
             _userAPIDbContext.RemoveRange(users);
             _userAPIDbContext.SaveChanges();
