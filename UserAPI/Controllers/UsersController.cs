@@ -40,36 +40,36 @@ namespace UserAPI.Controllers
         }
         
         [HttpPost]
-        public async Task<IActionResult> AddUser(AddUserRequest addUserRequest)
+        public async Task<IActionResult> AddUser(User user)
         {
-            var user = new User()
+            var users = new User()
             {
                 Id = Guid.NewGuid(),
-                Address = addUserRequest.Address,
-                Email = addUserRequest.Email,
-                Phone = addUserRequest.Phone,
-                FullName = addUserRequest.FullName
+                Address = user.Address,
+                Email = user.Email,
+                Phone = user.Phone,
+                FullName = user.FullName
             };
-            await _userAPIDbContext.Users.AddAsync(user);
+            await _userAPIDbContext.Users.AddAsync(users);
             await _userAPIDbContext.SaveChangesAsync();
-            return Ok(user);   
+            return Ok(users);   
         }
 
         [HttpPut]
         [Route("{id:guid}")]
-        public async Task<IActionResult> UpdateUser([FromRoute] Guid id,UpdateUserRequest updateUserRequest)
+        public async Task<IActionResult> UpdateUser([FromRoute] Guid id,User user)
         {
-            var user = _userAPIDbContext.Users.Find(id);
-            if (user != null) 
+            var users = _userAPIDbContext.Users.Find(id);
+            if (users != null) 
             {
-                user.FullName = updateUserRequest.FullName;
-                user.Address = updateUserRequest.Address;
-                user.Phone = updateUserRequest.Phone;
-                user.Email  = updateUserRequest.Email;
+                users.FullName = user.FullName;
+                users.Address = user.Address;
+                users.Phone = user.Phone;
+                users.Email  = user.Email;
                 await _userAPIDbContext.SaveChangesAsync();
 
 
-                return Ok(user); 
+                return Ok(users); 
             }
             return NotFound();
 
@@ -91,7 +91,7 @@ namespace UserAPI.Controllers
         [HttpDelete]
         public async Task<IActionResult> DeleteAll()
         {
-            var users =  _userAPIDbContext.Users.ToListAsync();
+            var users =  await _userAPIDbContext.Users.ToListAsync();
 
             _userAPIDbContext.RemoveRange(users);
             _userAPIDbContext.SaveChanges();
